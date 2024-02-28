@@ -12,4 +12,7 @@ beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
 
 afterAll(() => server.close());
 
-afterEach(() => server.resetHandlers());
+afterEach(() => {
+  server.resetHandlers();
+  process.env.INPUT_TIME_ZONE = "UTC";
+});

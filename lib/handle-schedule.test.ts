@@ -1,11 +1,9 @@
 import mockDate from "mockdate";
-import timezoneMock from "timezone-mock";
 import { describe, test, expect, vi, beforeEach } from "vitest";
 import { mockProcessStdout } from "vitest-mock-process";
 import handleSchedule from "./handle-schedule";
 import * as comment from "./comment";
 
-timezoneMock.register("UTC");
 mockDate.set("2022-06-10T00:00:00.000Z");
 
 beforeEach(() => {

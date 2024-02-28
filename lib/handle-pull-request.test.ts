@@ -1,5 +1,4 @@
 import mockDate from "mockdate";
-import timezoneMock from "timezone-mock";
 import { describe, test, expect, vi, afterAll, beforeAll } from "vitest";
 import { mockProcessStdout } from "vitest-mock-process";
 import {
@@ -10,7 +9,6 @@ import {
 import handlePullRequest from "./handle-pull-request";
 import * as comment from "./comment";
 
-timezoneMock.register("UTC");
 mockDate.set("2022-06-10T00:00:00.000Z");
 
 describe("handlePullRequest", () => {
@@ -131,7 +129,7 @@ describe("handlePullRequest", () => {
     expect(createComment.mock.calls).toHaveLength(1);
     expect(createComment.mock.calls[0][2]).toMatchInlineSnapshot(`
       ":warning: **Merge Schedule**
-      2022-06-08 00:00:00 (UTC) is already in the past
+      2022-06-08 00:00+00:00 is already in the past
       <!-- Merge Schedule Pull Request Comment -->"
     `);
   });
@@ -159,7 +157,7 @@ describe("handlePullRequest", () => {
     expect(createComment.mock.calls).toHaveLength(1);
     expect(createComment.mock.calls[0][2]).toMatchInlineSnapshot(`
       ":warning: **Merge Schedule**
-      2022-06-08 00:00:00 (UTC) is already in the past on Europe/Lisbon time zone
+      2022-06-08 00:00+01:00 is already in the past
       <!-- Merge Schedule Pull Request Comment -->"
     `);
   });
@@ -186,7 +184,7 @@ describe("handlePullRequest", () => {
     expect(createComment.mock.calls).toHaveLength(1);
     expect(createComment.mock.calls[0][2]).toMatchInlineSnapshot(`
       ":hourglass: **Merge Schedule**
-      Scheduled to be merged on 2022-06-12 00:00:00 (UTC)
+      Scheduled to be merged on 2022-06-12 00:00+00:00
       <!-- Merge Schedule Pull Request Comment -->"
     `);
   });
@@ -214,7 +212,7 @@ describe("handlePullRequest", () => {
     expect(updateComment.mock.calls).toHaveLength(1);
     expect(updateComment.mock.calls[0][2]).toMatchInlineSnapshot(`
       ":hourglass: **Merge Schedule**
-      Scheduled to be merged on 2022-06-12 00:00:00 (UTC)
+      Scheduled to be merged on 2022-06-12 00:00+00:00
       <!-- Merge Schedule Pull Request Comment -->"
     `);
   });

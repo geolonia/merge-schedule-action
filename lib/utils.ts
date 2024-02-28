@@ -1,4 +1,5 @@
 import type { SimplePullRequest } from "@octokit/webhooks-types";
+import dayjs from "./dayjs";
 
 export function hasScheduleCommand(text: string | null): boolean {
   if (!text) return false;
@@ -20,16 +21,6 @@ export function isValidMergeMethod(method: string): method is MergeMethod {
   return ["merge", "squash", "rebase"].includes(method);
 }
 
-/**
- * @reference https://stackoverflow.com/a/1353711/206879
- */
-export function isValidDate(datestring: string): boolean {
-  const date = new Date(datestring);
-  return date instanceof Date && !isNaN(date as unknown as number);
-}
-
-export function stringifyDate(datestring: string): string {
-  const dateTimeString = new Date(datestring).toISOString().split(".")[0];
-  const [date, time] = dateTimeString.split("T");
-  return `${date} ${time}`;
+export function formatDateWithTimezone(date: dayjs.Dayjs): string {
+  return date.format("YYYY-MM-DD HH:mmZ");
 }

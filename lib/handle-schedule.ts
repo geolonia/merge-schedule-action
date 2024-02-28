@@ -7,7 +7,6 @@ import {
   getPreviousComment,
   updateComment,
 } from "./comment";
-import localeDate from "./locale-date";
 import { getCommitChecksRunsStatus, getCommitStatusesStatus } from "./commit";
 import {
   getScheduleDateString,
@@ -15,6 +14,7 @@ import {
   isFork,
   isValidMergeMethod,
 } from "./utils";
+import dayjs from "./dayjs";
 
 /**
  * handle "schedule" event
@@ -70,7 +70,7 @@ export default async function handleSchedule(): Promise<void> {
   const duePullRequests = pullRequests.filter(
     (pullRequest) =>
       pullRequest.scheduledDate === "" ||
-      new Date(pullRequest.scheduledDate) < localeDate()
+      dayjs.tz(pullRequest.scheduledDate).isBefore(dayjs())
   );
 
   core.info(`${duePullRequests.length} due pull requests found`);

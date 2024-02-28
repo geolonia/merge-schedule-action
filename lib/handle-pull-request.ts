@@ -1,18 +1,17 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 import { readFileSync } from "fs";
-import localeDate from "./locale-date";
 import type {
   PullRequestEvent,
   SimplePullRequest,
 } from "@octokit/webhooks-types";
 import {
+  formatDateWithTimezone,
   getScheduleDateString,
   hasScheduleCommand,
   isFork,
-  isValidDate,
-  stringifyDate,
 } from "./utils";
+
 import {
   createComment,
   deleteComment,
@@ -20,6 +19,8 @@ import {
   getPreviousComment,
   updateComment,
 } from "./comment";
+
+import dayjs from "./dayjs";
 
 /**
  * Handle "pull_request" event
@@ -69,22 +70,24 @@ export default async function handlePullRequest(): Promise<void> {
   let commentBody = "";
 
   if (datestring) {
-    if (!isValidDate(datestring)) {
+    if (!dayjs(datestring).isValid()) {
       commentBody = generateBody(
         `"${datestring}" is not a valid date`,
         "error"
       );
-    } else if (new Date(datestring) < localeDate()) {
-      let message = `${stringifyDate(datestring)} (UTC) is already in the past`;
-      if (process.env.INPUT_TIME_ZONE !== "UTC") {
-        message = `${message} on ${process.env.INPUT_TIME_ZONE} time zone`;
-      }
-      commentBody = generateBody(message, "warning");
     } else {
-      commentBody = generateBody(
-        `Scheduled to be merged on ${stringifyDate(datestring)} (UTC)`,
-        "pending"
-      );
+      const parsedDate = dayjs.tz(datestring, process.env.INPUT_TIME_ZONE);
+      if (parsedDate.isBefore(dayjs())) {
+        const message = `${formatDateWithTimezone(
+          parsedDate
+        )} is already in the past`;
+        commentBody = generateBody(message, "warning");
+      } else {
+        commentBody = generateBody(
+          `Scheduled to be merged on ${formatDateWithTimezone(parsedDate)}`,
+          "pending"
+        );
+      }
     }
   } else {
     commentBody = generateBody(

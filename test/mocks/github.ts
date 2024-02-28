@@ -143,7 +143,7 @@ const pullRequestComments = pullRequests.map((pullRequest) => {
       body = "<!-- Merge Schedule Pull Request Comment -->";
       break;
     case 4:
-      body = `:hourglass: **Merge Schedule**\nScheduled to be merged on 2022-06-12 00:00:00 (UTC)\n<!-- Merge Schedule Pull Request Comment -->`;
+      body = `:hourglass: **Merge Schedule**\nScheduled to be merged on 2022-06-12 00:00+00:00\n<!-- Merge Schedule Pull Request Comment -->`;
       break;
     case 6:
       body = `:x: **Merge Schedule**\nScheduled merge failed: Pull Request is not mergeable\nIn order to let the automerge-automation try again, the label \\"automerge-fail\\" should be removed.\n<!-- Merge Schedule Pull Request Comment Fail -->`;
