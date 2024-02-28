@@ -23,7 +23,7 @@ jobs:
   merge_schedule:
     runs-on: ubuntu-latest
     steps:
-      - uses: gr2m/merge-schedule-action@v2
+      - uses: geolonia/merge-schedule-action@v1
         with:
           # Merge method to use. Possible values are merge, squash or
           # rebase. Default is merge.
@@ -65,6 +65,14 @@ To control at which time of the day you want the pull request to be merged, I re
 The action sets a pending commit status if the pull request was recognized as being scheduled.
 
 Note that pull requests from forks are ignored for security reasons.
+
+## Permissions
+
+It's recommended to use a fine-grained Personal Access Token with the following permissions:
+
+* Repository
+  * Commit Statuses, Checks, Metadata - Read
+  * Code, Issues, Pull Requests -- Read/Write
 
 ## License
 

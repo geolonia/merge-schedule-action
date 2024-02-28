@@ -1,13 +1,13 @@
 {
   "name": "merge-schedule-action",
   "private": true,
-  "version": "2.4.3",
+  "version": "0.0.0",
   "description": "GitHub Action to merge pull requests on a scheduled day",
-  "repository": "github:gr2m/merge-schedule-action",
+  "repository": "github:geolonia/merge-schedule-action",
   "keywords": [
     "github-action"
   ],
-  "author": "Gregor Martynus (https://twitter.com/gr2m)",
+  "author": "Gregor Martynus (https://twitter.com/gr2m), Geolonia (https://geolonia.com)",
   "license": "ISC",
   "scripts": {
     "prebuild": "npx rimraf dist",
