@@ -70,7 +70,9 @@ export default async function handleSchedule(): Promise<void> {
   const duePullRequests = pullRequests.filter(
     (pullRequest) =>
       pullRequest.scheduledDate === "" ||
-      dayjs.tz(pullRequest.scheduledDate).isBefore(dayjs())
+      dayjs
+        .tz(pullRequest.scheduledDate, process.env.INPUT_TIME_ZONE)
+        .isBefore(dayjs())
   );
 
   core.info(`${duePullRequests.length} due pull requests found`);

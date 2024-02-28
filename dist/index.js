@@ -9789,7 +9789,9 @@ async function handleSchedule() {
         return;
     }
     const duePullRequests = pullRequests.filter((pullRequest) => pullRequest.scheduledDate === "" ||
-        dayjs_1.default.tz(pullRequest.scheduledDate).isBefore((0, dayjs_1.default)()));
+        dayjs_1.default
+            .tz(pullRequest.scheduledDate, process.env.INPUT_TIME_ZONE)
+            .isBefore((0, dayjs_1.default)()));
     core.info(`${duePullRequests.length} due pull requests found`);
     if (duePullRequests.length === 0) {
         return;
