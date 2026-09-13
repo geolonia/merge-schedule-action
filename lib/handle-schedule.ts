@@ -1,6 +1,5 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
-import type { SimplePullRequest } from "@octokit/webhooks-types";
 import {
   createComment,
   generateBody,
@@ -45,10 +44,12 @@ export default async function handleSchedule(): Promise<void> {
     },
     (response) => {
       return response.data
-        .filter((pullRequest) => !isFork(pullRequest as SimplePullRequest))
+        .filter((pullRequest) => !isFork(pullRequest))
         .filter((pullRequest) => hasScheduleCommand(pullRequest.body))
         .filter((pullRequest) =>
-          pullRequest.labels.every((label) => label.name !== automergeFailLabel)
+          pullRequest.labels.every(
+            (label) => label.name !== automergeFailLabel,
+          ),
         )
         .map((pullRequest) => {
           return {
@@ -58,7 +59,7 @@ export default async function handleSchedule(): Promise<void> {
             ref: pullRequest.head.sha,
           };
         });
-    }
+    },
   );
 
   core.info(`${pullRequests.length} scheduled pull requests found`);
@@ -72,7 +73,7 @@ export default async function handleSchedule(): Promise<void> {
       pullRequest.scheduledDate === "" ||
       dayjs
         .tz(pullRequest.scheduledDate, process.env.INPUT_TIME_ZONE)
-        .isBefore(dayjs())
+        .isBefore(dayjs()),
   );
 
   core.info(`${duePullRequests.length} due pull requests found`);
@@ -81,7 +82,7 @@ export default async function handleSchedule(): Promise<void> {
     return;
   }
 
-  for await (const pullRequest of duePullRequests) {
+  for (const pullRequest of duePullRequests) {
     if (requireStatusesSuccess) {
       const [checkRunsStatus, statusesStatus] = await Promise.all([
         getCommitChecksRunsStatus(octokit, pullRequest.ref),
@@ -89,7 +90,7 @@ export default async function handleSchedule(): Promise<void> {
       ]);
       if (checkRunsStatus !== "completed" || statusesStatus !== "success") {
         core.info(
-          `${pullRequest.html_url} is not ready to be merged yet because all checks are not completed or statuses are not success`
+          `${pullRequest.html_url} is not ready to be merged yet because all checks are not completed or statuses are not success`,
         );
         continue;
       }
@@ -106,27 +107,27 @@ export default async function handleSchedule(): Promise<void> {
       const previousComment = await getPreviousComment(
         octokit,
         pullRequest.number,
-        "fail"
+        "fail",
       );
       const commentBody = generateBody(
         `Scheduled merge failed: ${
           (error as Error).message
         }\nIn order to let the automerge-automation try again, the label "${automergeFailLabel}" should be removed.`,
         "error",
-        "fail"
+        "fail",
       );
       if (previousComment) {
         const { data } = await updateComment(
           octokit,
           previousComment.id,
-          commentBody
+          commentBody,
         );
         core.info(`Comment updated: ${data.html_url}`);
       } else {
         const { data } = await createComment(
           octokit,
           pullRequest.number,
-          commentBody
+          commentBody,
         );
         core.info(`Comment created: ${data.html_url}`);
       }
@@ -141,19 +142,19 @@ export default async function handleSchedule(): Promise<void> {
 
     const previousComment = await getPreviousComment(
       octokit,
-      pullRequest.number
+      pullRequest.number,
     );
 
-    let commentBody = "";
+    let commentBody: string;
     if (pullRequest.scheduledDate) {
       commentBody = generateBody(
         `Scheduled on ${pullRequest.scheduledDate} (UTC) successfully merged`,
-        "success"
+        "success",
       );
     } else {
       commentBody = generateBody(
         `Scheduled on next cron expression successfully merged`,
-        "success"
+        "success",
       );
     }
 
@@ -161,7 +162,7 @@ export default async function handleSchedule(): Promise<void> {
       const { data } = await updateComment(
         octokit,
         previousComment.id,
-        commentBody
+        commentBody,
       );
       core.info(`Comment updated: ${data.html_url}`);
       continue;
@@ -170,7 +171,7 @@ export default async function handleSchedule(): Promise<void> {
     const { data } = await createComment(
       octokit,
       pullRequest.number,
-      commentBody
+      commentBody,
     );
     core.info(`Comment created: ${data.html_url}`);
   }

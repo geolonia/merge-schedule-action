@@ -1,4 +1,3 @@
-import type { SimplePullRequest } from "@octokit/webhooks-types";
 import dayjs from "./dayjs";
 
 export function hasScheduleCommand(text: string | null): boolean {
@@ -6,8 +5,10 @@ export function hasScheduleCommand(text: string | null): boolean {
   return /(^|\n)\/schedule/.test(text);
 }
 
-export function isFork(pullRequest: SimplePullRequest): boolean {
-  return pullRequest.head.repo.fork;
+export function isFork(pullRequest: {
+  head: { repo?: { fork: boolean } | null };
+}): boolean {
+  return pullRequest.head.repo?.fork ?? false;
 }
 
 export function getScheduleDateString(text: string | null): string {

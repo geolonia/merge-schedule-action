@@ -12,7 +12,7 @@ test("getScheduleDateString", () => {
   expect(getScheduleDateString("/schedule")).toBe("");
   expect(getScheduleDateString("/schedule 2022-06-08")).toBe("2022-06-08");
   expect(getScheduleDateString("/schedule 2022-06-08T12:00:00")).toBe(
-    "2022-06-08T12:00:00"
+    "2022-06-08T12:00:00",
   );
 });
 
@@ -39,9 +39,9 @@ test("isValidMergeMethod", () => {
 
 test("formatDateWithTimezone", () => {
   expect(formatDateWithTimezone(dayjs.tz("2022-06-08T12:00:00", "UTC"))).toBe(
-    "2022-06-08 12:00+00:00"
+    "2022-06-08 12:00+00:00",
   );
   expect(
-    formatDateWithTimezone(dayjs.tz("2022-06-08T12:00:00", "Asia/Tokyo"))
+    formatDateWithTimezone(dayjs.tz("2022-06-08T12:00:00", "Asia/Tokyo")),
   ).toBe("2022-06-08 12:00+09:00");
 });

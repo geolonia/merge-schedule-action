@@ -1,0 +1,5 @@
+# msw's postinstall is an optional, self-swallowing notice; nothing to build.
+# esbuild places its platform binary there, so it has to run.
+allowBuilds:
+  msw: false
+  esbuild: true

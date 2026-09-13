@@ -12,7 +12,7 @@ type CommentVariant = "default" | "fail";
 export async function getPreviousComment(
   octokit: Octokit,
   pullRequestNumber: number,
-  variant: CommentVariant = "default"
+  variant: CommentVariant = "default",
 ) {
   const prComments = await octokit.paginate(
     octokit.rest.issues.listComments,
@@ -23,10 +23,10 @@ export async function getPreviousComment(
     (response) => {
       return response.data.filter((comment) =>
         comment.body?.includes(
-          variant === "fail" ? commentFailFooter : commentFooter
-        )
+          variant === "fail" ? commentFailFooter : commentFooter,
+        ),
       );
-    }
+    },
   );
   const previousComment = prComments.pop();
   return previousComment;
@@ -44,7 +44,7 @@ const statePrefix: Record<State, string> = {
 export function generateBody(
   body: string,
   state: State,
-  variant: CommentVariant = "default"
+  variant: CommentVariant = "default",
 ) {
   let newBody = body;
   if (!body.startsWith(commentHeader)) {
@@ -60,7 +60,7 @@ export function generateBody(
 export async function createComment(
   octokit: Octokit,
   pullRequestNumber: number,
-  body: string
+  body: string,
 ) {
   return octokit.rest.issues.createComment({
     ...github.context.repo,
@@ -72,7 +72,7 @@ export async function createComment(
 export async function updateComment(
   octokit: Octokit,
   commentId: number,
-  body: string
+  body: string,
 ) {
   return octokit.rest.issues.updateComment({
     ...github.context.repo,

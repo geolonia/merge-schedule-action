@@ -5,7 +5,7 @@ type Octokit = InstanceType<typeof GitHub>;
 
 export async function getCommitChecksRunsStatus(
   octokit: Octokit,
-  commitRef: string
+  commitRef: string,
 ) {
   const { data } = await octokit.rest.checks.listForRef({
     ...github.context.repo,
@@ -25,7 +25,7 @@ export async function getCommitChecksRunsStatus(
 
 export async function getCommitStatusesStatus(
   octokit: Octokit,
-  commitRef: string
+  commitRef: string,
 ) {
   const { data } = await octokit.rest.repos.getCombinedStatusForRef({
     ...github.context.repo,
