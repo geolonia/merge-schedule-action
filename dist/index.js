@@ -24699,7 +24699,7 @@ function hasScheduleCommand(text) {
   return /(^|\n)\/schedule/.test(text);
 }
 function isFork(pullRequest) {
-  return pullRequest.head.repo?.fork ?? false;
+  return pullRequest.head.repo?.full_name !== pullRequest.base.repo?.full_name;
 }
 function getScheduleDateString(text) {
   if (!text) return "";

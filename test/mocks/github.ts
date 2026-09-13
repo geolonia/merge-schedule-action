@@ -32,10 +32,15 @@ const pullRequests = [
     html_url: githubPullRequestUrl(2),
     state: "open",
     body: "Simple body\n/schedule 2022-06-08",
+    base: {
+      repo: {
+        full_name: `${owner}/${repo}`,
+      },
+    },
     head: {
       sha: "abc123success",
       repo: {
-        fork: false,
+        full_name: `${owner}/${repo}`,
       },
     },
     labels: [],
@@ -45,10 +50,15 @@ const pullRequests = [
     html_url: githubPullRequestUrl(3),
     state: "open",
     body: "Simple body\n/schedule 2022-06-09",
+    base: {
+      repo: {
+        full_name: `${owner}/${repo}`,
+      },
+    },
     head: {
       sha: "abc123pending",
       repo: {
-        fork: false,
+        full_name: `${owner}/${repo}`,
       },
     },
     labels: [],
@@ -58,10 +68,15 @@ const pullRequests = [
     html_url: githubPullRequestUrl(4),
     state: "open",
     body: "Simple body\n/schedule 2022-06-12",
+    base: {
+      repo: {
+        full_name: `${owner}/${repo}`,
+      },
+    },
     head: {
       sha: "abc123success",
       repo: {
-        fork: false,
+        full_name: `${owner}/${repo}`,
       },
     },
     labels: [],
@@ -71,10 +86,15 @@ const pullRequests = [
     html_url: githubPullRequestUrl(13),
     state: "open",
     body: "With conflicts body\n/schedule 2022-06-09",
+    base: {
+      repo: {
+        full_name: `${owner}/${repo}`,
+      },
+    },
     head: {
       sha: "abc123success",
       repo: {
-        fork: false,
+        full_name: `${owner}/${repo}`,
       },
     },
     labels: [],
@@ -84,10 +104,15 @@ const pullRequests = [
     html_url: githubPullRequestUrl(5),
     state: "open",
     body: "With automerge-fail label\n/schedule 2022-06-07",
+    base: {
+      repo: {
+        full_name: `${owner}/${repo}`,
+      },
+    },
     head: {
       sha: "abc123success",
       repo: {
-        fork: false,
+        full_name: `${owner}/${repo}`,
       },
     },
     labels: [
@@ -101,10 +126,15 @@ const pullRequests = [
     html_url: githubPullRequestUrl(6),
     state: "open",
     body: "With automerge-fail previous comment\n/schedule 2022-06-07",
+    base: {
+      repo: {
+        full_name: `${owner}/${repo}`,
+      },
+    },
     head: {
       sha: "abc123success",
       repo: {
-        fork: false,
+        full_name: `${owner}/${repo}`,
       },
     },
     labels: [],
@@ -114,10 +144,15 @@ const pullRequests = [
     html_url: githubPullRequestUrl(7),
     state: "open",
     body: "Simple body not schedule date\n/schedule",
+    base: {
+      repo: {
+        full_name: `${owner}/${repo}`,
+      },
+    },
     head: {
       sha: "abc123success",
       repo: {
-        fork: false,
+        full_name: `${owner}/${repo}`,
       },
     },
     labels: [],
@@ -127,10 +162,15 @@ const pullRequests = [
     html_url: githubPullRequestUrl(14),
     state: "open",
     body: "Simple body\n/schedule 2022-06-09",
+    base: {
+      repo: {
+        full_name: `${owner}/${repo}`,
+      },
+    },
     head: {
       sha: "abc123pending-empty",
       repo: {
-        fork: false,
+        full_name: `${owner}/${repo}`,
       },
     },
     labels: [],

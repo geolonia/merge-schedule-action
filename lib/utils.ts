@@ -5,10 +5,22 @@ export function hasScheduleCommand(text: string | null): boolean {
   return /(^|\n)\/schedule/.test(text);
 }
 
-export function isFork(pullRequest: {
-  head: { repo?: { fork: boolean } | null };
-}): boolean {
-  return pullRequest.head.repo?.fork ?? false;
+type PullRequestRepos = {
+  head: { repo?: { full_name: string } | null };
+  base: { repo?: { full_name: string } | null };
+};
+
+/**
+ * Whether the pull request is raised from a different repository.
+ *
+ * Comparing head against base rather than reading `head.repo.fork`: that flag
+ * says the head repository is itself a fork of something, which is true for
+ * every pull request in a repository that was forked -- including same-repo
+ * ones. A missing head repository means the fork was deleted, which only
+ * happens to forks, so it counts as one.
+ */
+export function isFork(pullRequest: PullRequestRepos): boolean {
+  return pullRequest.head.repo?.full_name !== pullRequest.base.repo?.full_name;
 }
 
 export function getScheduleDateString(text: string | null): string {

@@ -3,9 +3,29 @@ import {
   formatDateWithTimezone,
   getScheduleDateString,
   hasScheduleCommand,
+  isFork,
   isValidMergeMethod,
 } from "./utils";
 import dayjs from "./dayjs";
+
+test("isFork", () => {
+  const base = { repo: { full_name: "gr2m/merge-schedule-action" } };
+
+  expect(isFork({ base, head: base })).toBe(false);
+  expect(
+    isFork({
+      base,
+      head: { repo: { full_name: "contributor/merge-schedule-action" } },
+    }),
+  ).toBe(true);
+
+  // A repository that is itself a fork still raises same-repo pull requests.
+  const forked = { repo: { full_name: "geolonia/merge-schedule-action" } };
+  expect(isFork({ base: forked, head: forked })).toBe(false);
+
+  // The head repository is gone, which only happens once a fork is deleted.
+  expect(isFork({ base, head: { repo: null } })).toBe(true);
+});
 
 test("getScheduleDateString", () => {
   expect(getScheduleDateString("")).toBe("");

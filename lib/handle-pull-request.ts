@@ -29,7 +29,8 @@ type PullRequestEvent = {
     html_url: string;
     state: string;
     body: string | null;
-    head: { repo?: { fork: boolean } | null };
+    head: { repo?: { full_name: string } | null };
+    base: { repo?: { full_name: string } | null };
   };
 };
 
