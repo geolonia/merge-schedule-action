@@ -61,17 +61,23 @@ for (const input of Object.keys(meta.inputs)) {
   if (root) roots.add(root);
 }
 
+// Keyed by name and version, not name alone: a bundle can carry two majors of
+// the same package -- @actions/http-client 3 and 4 both ship in this one -- and
+// their license texts are not guaranteed to match.
 const packages = new Map();
 for (const root of roots) {
   const pkg = manifest(root);
   if (!pkg?.name) continue;
 
-  // A package can be present at several paths; keep the first that carries a
-  // license text so the output stays stable.
-  if (packages.has(pkg.name) && packages.get(pkg.name).text) continue;
+  const version = typeof pkg.version === "string" ? pkg.version : "";
+  const key = version ? `${pkg.name}@${version}` : pkg.name;
 
-  packages.set(pkg.name, {
-    version: pkg.version ?? "",
+  // One version can still resolve to several paths; keep the first that
+  // carries a license text so the output stays stable.
+  if (packages.get(key)?.text) continue;
+
+  packages.set(key, {
+    label: key,
     license: typeof pkg.license === "string" ? pkg.license : "",
     text: licenseText(root),
   });
@@ -79,12 +85,12 @@ for (const root of roots) {
 
 const missing = [];
 const sections = [];
-for (const [name, pkg] of [...packages].sort(([a], [b]) => (a < b ? -1 : 1))) {
+for (const [, pkg] of [...packages].sort(([a], [b]) => (a < b ? -1 : 1))) {
   if (!pkg.text) {
-    missing.push(pkg.license ? `${name} (${pkg.license})` : name);
+    missing.push(pkg.license ? `${pkg.label} (${pkg.license})` : pkg.label);
     continue;
   }
-  sections.push(`${name}\n${pkg.license}\n${pkg.text}\n`);
+  sections.push(`${pkg.label}\n${pkg.license}\n${pkg.text}\n`);
 }
 
 if (!sections.length) {
