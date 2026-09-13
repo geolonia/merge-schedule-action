@@ -24,7 +24,14 @@ jobs:
         run: pnpm run lint
       - if: ${{ github.event_name == 'pull_request' }}
         run: pnpm run test:ci
-      - run: pnpm run build
+      - if: ${{ github.event_name == 'pull_request' }}
+        run: pnpm run build
+      # Catches a source change landing without its rebuilt bundle. Skipped on
+      # the cron run so a stale dist cannot block a scheduled merge -- that run
+      # has not rebuilt, so it exercises the committed bundle consumers get.
+      - if: ${{ github.event_name == 'pull_request' }}
+        name: dist is up to date
+        run: git diff --exit-code -- dist/
       - uses: ./
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
