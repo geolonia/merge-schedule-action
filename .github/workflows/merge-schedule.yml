@@ -1,4 +1,5 @@
 name: Merge Schedule
+
 "on":
   pull_request:
     types:
@@ -12,18 +13,25 @@ jobs:
   merge_schedule:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
-          node-version-file: .nvmrc
-          cache: npm
-          node-version: lts/*
-      - run: npm ci
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - if: ${{ github.event_name == 'pull_request' }}
-        run: npm run lint
+        run: pnpm run lint
       - if: ${{ github.event_name == 'pull_request' }}
-        run: npm run test:ci
-      - run: npm run build
+        run: pnpm run test:ci
+      - if: ${{ github.event_name == 'pull_request' }}
+        run: pnpm run build
+      # Catches a source change landing without its rebuilt bundle. Skipped on
+      # the cron run so a stale dist cannot block a scheduled merge -- that run
+      # has not rebuilt, so it exercises the committed bundle consumers get.
+      - if: ${{ github.event_name == 'pull_request' }}
+        name: dist is up to date
+        run: git diff --exit-code -- dist/
       - uses: ./
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

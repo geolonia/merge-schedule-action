@@ -1,6 +1,6 @@
 import mockDate from "mockdate";
 import { describe, test, expect, vi, afterAll, beforeAll } from "vitest";
-import { mockProcessStdout } from "vitest-mock-process";
+import { mockProcessStdout } from "../test/mock-process-stdout";
 import {
   generatePullRequestWebhook,
   cleanupWebhooksFolder,
@@ -102,7 +102,7 @@ describe("handlePullRequest", () => {
     expect(createComment.mock.calls).toHaveLength(1);
     expect(createComment.mock.calls[0][2]).toMatchInlineSnapshot(`
       ":x: **Merge Schedule**
-      \\"bad-date\\" is not a valid date
+      "bad-date" is not a valid date
       <!-- Merge Schedule Pull Request Comment -->"
     `);
   });

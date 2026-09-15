@@ -1,6 +1,6 @@
 import mockDate from "mockdate";
 import { describe, test, expect, vi, beforeEach } from "vitest";
-import { mockProcessStdout } from "vitest-mock-process";
+import { mockProcessStdout } from "../test/mock-process-stdout";
 import handleSchedule from "./handle-schedule";
 import * as comment from "./comment";
 
@@ -66,8 +66,8 @@ describe("handleSchedule", () => {
     `);
     expect(createComment.mock.calls[1][2]).toMatchInlineSnapshot(`
       ":x: **Merge Schedule**
-      Scheduled merge failed: Pull Request is not mergeable
-      In order to let the automerge-automation try again, the label \\"automerge-fail\\" should be removed.
+      Scheduled merge failed: Pull Request is not mergeable - https://docs.github.com/rest/reference/pulls#merge-a-pull-request
+      In order to let the automerge-automation try again, the label "automerge-fail" should be removed.
       <!-- Merge Schedule Pull Request Comment Fail -->"
     `);
     expect(createComment.mock.calls[2][2]).toMatchInlineSnapshot(`
@@ -83,8 +83,8 @@ describe("handleSchedule", () => {
     `);
     expect(updateComment.mock.calls[1][2]).toMatchInlineSnapshot(`
       ":x: **Merge Schedule**
-      Scheduled merge failed: Pull Request is not mergeable
-      In order to let the automerge-automation try again, the label \\"automerge-fail\\" should be removed.
+      Scheduled merge failed: Pull Request is not mergeable - https://docs.github.com/rest/reference/pulls#merge-a-pull-request
+      In order to let the automerge-automation try again, the label "automerge-fail" should be removed.
       <!-- Merge Schedule Pull Request Comment Fail -->"
     `);
   });
@@ -133,8 +133,8 @@ describe("handleSchedule", () => {
     `);
     expect(createComment.mock.calls[1][2]).toMatchInlineSnapshot(`
       ":x: **Merge Schedule**
-      Scheduled merge failed: Pull Request is not mergeable
-      In order to let the automerge-automation try again, the label \\"automerge-fail\\" should be removed.
+      Scheduled merge failed: Pull Request is not mergeable - https://docs.github.com/rest/reference/pulls#merge-a-pull-request
+      In order to let the automerge-automation try again, the label "automerge-fail" should be removed.
       <!-- Merge Schedule Pull Request Comment Fail -->"
     `);
     expect(createComment.mock.calls[2][2]).toMatchInlineSnapshot(`
@@ -145,8 +145,8 @@ describe("handleSchedule", () => {
     expect(updateComment.mock.calls).toHaveLength(1);
     expect(updateComment.mock.calls[0][2]).toMatchInlineSnapshot(`
       ":x: **Merge Schedule**
-      Scheduled merge failed: Pull Request is not mergeable
-      In order to let the automerge-automation try again, the label \\"automerge-fail\\" should be removed.
+      Scheduled merge failed: Pull Request is not mergeable - https://docs.github.com/rest/reference/pulls#merge-a-pull-request
+      In order to let the automerge-automation try again, the label "automerge-fail" should be removed.
       <!-- Merge Schedule Pull Request Comment Fail -->"
     `);
   });

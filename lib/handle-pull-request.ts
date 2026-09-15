@@ -1,10 +1,6 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 import { readFileSync } from "fs";
-import type {
-  PullRequestEvent,
-  SimplePullRequest,
-} from "@octokit/webhooks-types";
 import {
   formatDateWithTimezone,
   getScheduleDateString,
@@ -23,6 +19,22 @@ import {
 import dayjs from "./dayjs";
 
 /**
+ * The slice of the `pull_request` webhook payload this action reads.
+ * Hand-rolled because `@octokit/webhooks-types` is deprecated upstream.
+ */
+type PullRequestEvent = {
+  action: string;
+  pull_request: {
+    number: number;
+    html_url: string;
+    state: string;
+    body: string | null;
+    head: { repo?: { full_name: string } | null };
+    base: { repo?: { full_name: string } | null };
+  };
+};
+
+/**
  * Handle "pull_request" event
  */
 export default async function handlePullRequest(): Promise<void> {
@@ -34,12 +46,12 @@ export default async function handlePullRequest(): Promise<void> {
   const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
 
   const eventPayload = JSON.parse(
-    readFileSync(process.env.GITHUB_EVENT_PATH, { encoding: "utf8" })
+    readFileSync(process.env.GITHUB_EVENT_PATH, { encoding: "utf8" }),
   ) as PullRequestEvent;
   const pullRequest = eventPayload.pull_request;
 
   core.info(
-    `Handling pull request ${eventPayload.action} for ${pullRequest.html_url}`
+    `Handling pull request ${eventPayload.action} for ${pullRequest.html_url}`,
   );
 
   if (pullRequest.state !== "open") {
@@ -47,7 +59,7 @@ export default async function handlePullRequest(): Promise<void> {
     return;
   }
 
-  if (isFork(pullRequest as SimplePullRequest)) {
+  if (isFork(pullRequest)) {
     core.setFailed("Setting a scheduled merge is not allowed from forks");
     return;
   }
@@ -67,32 +79,32 @@ export default async function handlePullRequest(): Promise<void> {
     core.info(`Schedule date found: "${datestring}"`);
   }
 
-  let commentBody = "";
+  let commentBody: string;
 
   if (datestring) {
     if (!dayjs(datestring).isValid()) {
       commentBody = generateBody(
         `"${datestring}" is not a valid date`,
-        "error"
+        "error",
       );
     } else {
       const parsedDate = dayjs.tz(datestring, process.env.INPUT_TIME_ZONE);
       if (parsedDate.isBefore(dayjs())) {
         const message = `${formatDateWithTimezone(
-          parsedDate
+          parsedDate,
         )} is already in the past`;
         commentBody = generateBody(message, "warning");
       } else {
         commentBody = generateBody(
           `Scheduled to be merged on ${formatDateWithTimezone(parsedDate)}`,
-          "pending"
+          "pending",
         );
       }
     }
   } else {
     commentBody = generateBody(
       `Scheduled to be merged the next time the merge action is scheduled via the cron expressions`,
-      "pending"
+      "pending",
     );
   }
 
@@ -104,7 +116,7 @@ export default async function handlePullRequest(): Promise<void> {
     const { data } = await updateComment(
       octokit,
       previousComment.id,
-      commentBody
+      commentBody,
     );
     core.info(`Comment updated: ${data.html_url}`);
     return;
@@ -113,7 +125,7 @@ export default async function handlePullRequest(): Promise<void> {
   const { data } = await createComment(
     octokit,
     pullRequest.number,
-    commentBody
+    commentBody,
   );
   core.info(`Comment created: ${data.html_url}`);
 }

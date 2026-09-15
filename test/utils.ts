@@ -26,16 +26,22 @@ export function generatePullRequestWebhook({
   fork = false,
 }: PullRequestWebhookOptions = {}) {
   // https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#webhook-payload-example-33
+  const baseRepo = "gr2m/merge-schedule-action";
   const payload = {
     action: state === "closed" ? "closed" : "opened",
     pull_request: {
-      html_url: `https://github.com/gr2m/merge-schedule-action/pull/${number}`,
+      html_url: `https://github.com/${baseRepo}/pull/${number}`,
       number,
       state,
       body,
       head: {
         repo: {
-          fork,
+          full_name: fork ? "contributor/merge-schedule-action" : baseRepo,
+        },
+      },
+      base: {
+        repo: {
+          full_name: baseRepo,
         },
       },
     },
